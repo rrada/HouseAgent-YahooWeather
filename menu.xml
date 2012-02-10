@@ -1,0 +1,14 @@
+<items>
+    <item name="Y!Weather" url="/yahooweather-show" image="/yahooweather-images/icon.png">
+        <subitem>
+            <name>Weather</name>
+            <url>/yahooweather-show</url>
+            <description>Show current weather and forecast for defined locations.</description>
+        </subitem>
+        <subitem>
+            <name>Manage locations</name>
+            <url>/yahooweather-manage</url>
+            <description>Manage locations for YahooWeather service.</description>
+        </subitem>
+    </item>
+</items>

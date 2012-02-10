@@ -1,0 +1,12 @@
+HouseAgent - YahooWeather
+
+YahooWeather service plugin for HouseAgent project
+
+Show current conditions and forecast for defined locations(WOEIDs)
+All of these data are cached in file. Cache period is configurable(30 minutes by default). After that time is cache invalid and fresh data are downloaded(on your request).
+
+
+TODO:
+ * Better UI (currently in prototype state)
+ * better JS handling
+ * code cleanup

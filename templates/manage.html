@@ -1,0 +1,97 @@
+<%inherit file="/master.html"/>
+<%def name="head()">
+<script language='javascript'>
+$(document).ready(function() 
+{
+    	$(".error").hide();
+	$("#add").button();
+
+	$("#add").click(function() {
+		woeid = $("input#woeid");
+
+        if (woeid.val() == "") {
+            $("label#woeid_error").show();
+            woeid.focus();
+            return false;
+        }
+        
+		var dataString = "action=add&woeid=" + woeid.val();
+		
+		$.ajax({
+			type: "POST",
+			url: "/yahooweather-manage", 
+			data: dataString,
+			success: function(data) {
+				$("#message").html('<img height="16" width="16" align="left" class="message" src="/images/ok.png">WOEID succesfully added to the config file!');
+				$("#message").show("slow", function() {});
+			}
+		});
+	});
+
+        $("table td img#delete").click(function(){
+            var answer = confirm("Are you sure you want to delete this WOEID?")
+            if (answer) {
+                var elem = $(this)
+                woeid = $(this).parent().parent().parent().attr("id")
+                //console.log("id=");
+                //console.log(id)
+                var dataString = "action=del&woeid=" + woeid;
+                
+                        $.ajax({
+                                type: "POST",
+                                url: "/yahooweather-manage", 
+                                data: dataString,
+                                success: function(data) {
+                                                        elem.parent().parent().parent().remove();
+                                                 }
+                        });
+            }   
+            return false;
+        });
+});
+</script>
+</%def>
+<%def name="content()">
+<table cellspacing="0" cellpadding="0" align="left" width="100%">
+	<tbody>
+		<tr>
+			<td class="HeadText">Manage locations</td>
+		</tr>
+		<tr>
+			<td class="body info">
+				<p>This page allows you to add a new WOEID to the YahooWeather configuration.
+				</p>
+			</td>
+		</tr>
+		<tr class="HeadTable">
+			<td>WOEID<td>
+		</tr>
+		% for woeid in result:
+		<tr class="Row" id="${woeid}">
+			<td>${woeid}</td>
+			<td><a href="javascript:void(0);"><img id="delete" border="0" src="/images/delete.png"></a></td>
+		</tr>
+		% endfor
+		<tr class="Row">
+			<form>
+				<td class="Label">
+					<span class="requiredfield">*</span>
+					WOEID: 
+				</td>
+				<td>
+					<input class="Field250" name="woeid" id="woeid">
+					<label class="error" for="woeid" id="woeid_error">This field is required.</label> 
+					<div id="message" class="message"></div>
+				</td>
+			</form>
+		</tr>
+			<!--  Save button -->
+		<tr>
+			<td class="Label">&nbsp;</td>
+			<td height="30" valign="top">
+				<button id="add">Add</button><br><br>
+			</td>
+		</tr>
+	</tbody>
+</table>
+</%def>

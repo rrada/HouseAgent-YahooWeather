@@ -1,0 +1,79 @@
+<%inherit file="/master.html"/>
+
+<%def name="head()">
+</%def>
+
+<%!
+# based on python geo module (http://hoegners.de/Maxi/geo/)
+import math
+direction_names = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
+directions_num = len(direction_names)
+directions_step = 360./directions_num
+
+def normalize_angle(angle):
+	""" Takes angle in degrees and returns angle from 0 to 360 degrees """
+	cycles = angle/360.
+	normalized_cycles = cycles - math.floor(cycles)
+	return normalized_cycles*360.
+
+def direction_name(angle):
+	""" Returns a name for a direction given in degrees. Example: direction_name(0.0) returns "N", direction_name(90.0) returns "O", direction_name(152.0) returns "SSO". """
+	index = int(round( normalize_angle(float(angle))/directions_step ))
+	index %= directions_num
+	return direction_names[index]
+%>
+
+
+<%def name="content()">
+<table cellspacing="0" cellpadding="0" align="left" width="100%">
+	<tbody>
+		<tr>
+			<td class="HeadText">Y!Weather</td>
+		</tr>
+		<tr>
+			<td class="body">
+				<tr class="HeadTable">
+					<td width="8%" rowspan=3 colspan=1>City</td>
+					<td colspan=6 align="center">Current condition</td>
+					<td colspan=2 align="center">Forecast</td>
+					<td colspan=2 align="center">Astro</td>
+				</tr>
+				<tr class="HeadTable">
+					<td rowspan=2 width="5%">Temperature</td>
+					<td rowspan=2 width="5%">Humidity</td>
+					<td rowspan=2 width="5%">Pressure</td>
+					<td rowspan=2 width="5%">Visibility</td>
+					<td rowspan=2 width="6%">Wind</td>
+					<td rowspan=2 width="6%">Text</td>
+					<td colspan=2 align="center" width="8%">Temperature</td>
+					<td rowspan=2 width="4%">Sunset</td>
+					<td rowspan=2 width="4%">Sunrise</td>
+				</tr>
+				<tr class="HeadTable">
+					<td width="4%">High</td>
+					<td width="4%">Low</td>
+				</tr>
+				% for loc in result["location"]:
+				<tr class="Row">
+					<td>${result["location"][loc]["location"]["city"]}</td>
+					<td>${result["location"][loc]["cur_condition"]["temp"]} ${result["units"]["temperature"]}</td>
+					<td>${result["location"][loc]["atmos"]["humidity"]} %</td>
+					<td>${result["location"][loc]["atmos"]["pressure"]} ${result["units"]["pressure"]}</td>
+					<td>${result["location"][loc]["atmos"]["visibility"]} ${result["units"]["distance"]}</td>
+					% if result["location"][loc]["wind"]["direction"] != "":
+					<td>${result["location"][loc]["wind"]["direction"] | direction_name} ${result["location"][loc]["wind"]["speed"]} ${result["units"]["speed"]}</td>
+					% else:
+					<td>${result["location"][loc]["wind"]["speed"]} ${result["units"]["speed"]}</td>
+					% endif
+					<td>${result["location"][loc]["cur_condition"]["text"]}</td>
+					<td>${result["location"][loc]["forecast"]["high"]} ${result["units"]["temperature"]}</td>
+					<td>${result["location"][loc]["forecast"]["low"]} ${result["units"]["temperature"]}</td>
+					<td>${result["location"][loc]["astro"]["sunrise"]}</td>
+					<td>${result["location"][loc]["astro"]["sunset"]}</td>
+				</tr>
+				% endfor
+			</td>
+		</tr>
+	</tbody>
+</table>
+</%def>
